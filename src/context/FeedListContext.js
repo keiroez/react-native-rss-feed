@@ -4,11 +4,32 @@ const feedListReducer = (state, action) => {
     let newState = [];
     switch (action.type) {
         case 'add_feed':
-            console.log('implementar');
-            return state;
+            //Cria feed
+            let feed = {
+                titulo: action.payload.titulo,
+                urlFeed: action.payload.urlFeed,
+            }
+            //adiciona feed ao state
+            newState = [
+                ...state,
+                feed
+            ];
+            //adiciona feed ao array
+            rssFeeds.push(feed) 
+            return newState
         case 'delete_feed':
-            console.log('implementar');
-            return state;
+            //Removendo do array 
+            rssFeeds.forEach(element => {
+                if(element.urlFeed==action.payload){
+                    var index = rssFeeds.indexOf(element);
+                    rssFeeds.splice(index, 1); 
+                }
+            });
+            //Criando novo state
+            newState = state.filter(
+                (feed) => feed.urlFeed !== action.payload);
+            console.log('deletou feed '+action.payload);
+            return newState
         case 'restore_state':
             console.log('implementar');
             return state;
@@ -22,13 +43,23 @@ const feedListReducer = (state, action) => {
 
 const addFeed = dispatch => {
     return (titulo, urlFeed, callback) => {
-        console.log('implementar');
+        dispatch({
+            type: 'add_feed', 
+            payload:{  
+                titulo,
+                urlFeed
+            }
+        })
+        // if (callback) {
+        //     callback();
+        // }
+        console.log('Adicionando feed '+urlFeed);
     };
 };
 
 const deleteFeed = dispatch => {
     return (id) => {
-        console.log('implementar');
+        dispatch({ type: 'delete_feed', payload: id  });
     };
 };
 

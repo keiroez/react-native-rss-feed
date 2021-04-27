@@ -6,8 +6,7 @@ import { useContext } from 'react';
 import { Context } from '../context/FeedListContext'
 
 const IndexScreen = ({ navigation }) => {
-    const { state } = useContext(Context);
-
+    const { state, deleteFeed} = useContext(Context);
     return (
         <>
             <FlatList
@@ -15,14 +14,17 @@ const IndexScreen = ({ navigation }) => {
                 keyExtractor={(rssfeed) => rssfeed.urlFeed}
                 renderItem={({ item }) => {
                     return (
-                        <TouchableOpacity onPress={() => navigation.navigate('Show', { id: item.urlFeed })}>
+                        
                             <View style={styles.row}>
+                                <TouchableOpacity onPress={() => navigation.navigate('Show', { id: item.urlFeed })}>
                                 <Text style={styles.title}>{item.titulo}</Text>
-                                <TouchableOpacity onPress={() => { console.log('implementar'); }}>
+                                </TouchableOpacity>
+                                
+                                <TouchableOpacity onPress={() => {deleteFeed(item.urlFeed)}}>
                                     <Feather style={styles.icon} name="trash" />
                                 </TouchableOpacity>
                             </View>
-                        </TouchableOpacity>
+                        
                     );
                 }}
             />
@@ -33,7 +35,7 @@ const IndexScreen = ({ navigation }) => {
 IndexScreen.navigationOptions = ({ navigation }) => {
     return {
         headerRight: () => (
-            <TouchableOpacity onPress={() => { console.log('implementar'); }}>
+            <TouchableOpacity onPress={() =>  navigation.navigate('Add')}>
                 <Feather name="plus" size={30} />
             </TouchableOpacity>
         )
