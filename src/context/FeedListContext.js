@@ -50,9 +50,9 @@ const addFeed = dispatch => {
                 urlFeed
             }
         })
-        // if (callback) {
-        //     callback();
-        // }
+        if (callback) {
+            callback();
+        }
         console.log('Adicionando feed '+urlFeed);
     };
 };

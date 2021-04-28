@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button, Image } from 'react-native';
+import { View, Text, StyleSheet, Linking } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { Context as FeedListContext } from '../context/FeedListContext'
 import { Context as FeedContext } from '../context/FeedContext'
@@ -12,11 +12,12 @@ const ShowFeedScreen = ({ navigation }) => {
     const feedID = navigation.getParam('id');
     const feed = feedListContext.state.find((feed) => feed.urlFeed === feedID);
     const fetch = rssfeed(feed.urlFeed);
-    const { state, fetchItems } = useContext(FeedContext);
+    const { state, fetchItems} = useContext(FeedContext);
     fetchItems(fetch);
 
     const abrirLink = (link) => {
-        console.log('implementar, mandar o usuário para o link da notícia (item.link)');
+        Linking.openURL(link);
+        // console.log('implementar, mandar o usuário para o link da notícia (item.link)');
     }
 
     return (
@@ -28,8 +29,11 @@ const ShowFeedScreen = ({ navigation }) => {
                     //atualmente só exibe o título, faça com que apareça data de publicação, descrição (pode cortar em 100 ou 200 caracteres para não ficar muito grande), e imagem (caso tenha)
                     //ao clicar em uma notícia, devemos chamar a função abrirLink que direciona o usuário para o link da notícia
                     return (
+                        
                         <View style={styles.row}>
+                            <TouchableOpacity onPress={() => abrirLink(item.link)}>
                             <Text style={styles.titulo}>{item.titulo}</Text>
+                            </TouchableOpacity>
                         </View>
                     );
                 }}
