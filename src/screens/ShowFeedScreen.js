@@ -5,6 +5,7 @@ import { Context as FeedListContext } from '../context/FeedListContext'
 import { Context as FeedContext } from '../context/FeedContext'
 import { useContext } from 'react';
 import rssfeed from '../api/rssfeed';
+import { useEffect } from 'react';
 
 
 const ShowFeedScreen = ({ navigation }) => {
@@ -12,8 +13,13 @@ const ShowFeedScreen = ({ navigation }) => {
     const feedID = navigation.getParam('id');
     const feed = feedListContext.state.find((feed) => feed.urlFeed === feedID);
     const fetch = rssfeed(feed.urlFeed);
-    const { state, fetchItems} = useContext(FeedContext);
-    fetchItems(fetch);
+    const { state, fetchItems, deleteAll} = useContext(FeedContext);
+    
+
+    useEffect(() => {
+        deleteAll();
+        fetchItems(fetch);
+    }, []);
 
     const abrirLink = (link) => {
         Linking.openURL(link);
@@ -32,7 +38,9 @@ const ShowFeedScreen = ({ navigation }) => {
                         
                         <View style={styles.row}>
                             <TouchableOpacity onPress={() => abrirLink(item.link)}>
-                            <Text style={styles.titulo}>{item.titulo}</Text>
+                                <Text style={styles.dataPublicacao}>{new Date(item.dataPublicacao).toLocaleString('pt-BR')}</Text>
+                                <Text style={styles.titulo}>{item.titulo}</Text>
+                                <Text style={styles.descricao} >{item.descricao.slice(0,200)}...(LER MAIS)</Text>
                             </TouchableOpacity>
                         </View>
                     );
@@ -64,7 +72,7 @@ const styles = StyleSheet.create({
         margin: 5
     },
     descricao: {
-        fontSize: 8
+        fontSize: 9
     },
     dataPublicacao: {
         fontSize: 10,

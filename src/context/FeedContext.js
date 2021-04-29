@@ -31,8 +31,8 @@ const feedReducer = (state, action) => {
             console.log('implementar');
             return state;
         case 'delete_all':
-            console.log('Deletando lista de noticias');
-            
+            console.log('Limpando lista de noticias');
+            rssItems.splice(0,rssItems.length)
             return [];
         default:
             return state;
@@ -54,7 +54,6 @@ const deleteItem = dispatch => {
 const fetchItems = dispatch => async (fetch) => {
     const response = await fetch.get();
     const feedItems = parse(response.data);
-    const itens = feedItems.rss.channel.item
 
     dispatch({
         type: 'fetch_items',
@@ -70,9 +69,9 @@ const restoreState = dispatch => async () => {
 
 const deleteAll = dispatch => {
     return () => {
-        // dispatch({
-        //     type: 'delete_all',
-        // });
+        dispatch({
+            type: 'delete_all',
+        });
     }
 }
 
