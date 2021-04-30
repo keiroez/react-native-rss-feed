@@ -6,6 +6,7 @@ import { Context as FeedContext } from '../context/FeedContext'
 import { useContext } from 'react';
 import rssfeed from '../api/rssfeed';
 import { useEffect } from 'react';
+import { Feather } from '@expo/vector-icons';
 
 
 const ShowFeedScreen = ({ navigation }) => {
@@ -16,12 +17,15 @@ const ShowFeedScreen = ({ navigation }) => {
     const { state, fetchItems, deleteAll} = useContext(FeedContext);
     
 
+    //limpa e adiciona as notícias do xml ao array após a renderização da tela
+    //O uso fora do useEffect ficava repetindo os métodos a todo momento
     useEffect(() => {
         deleteAll();
         fetchItems(fetch);
     }, []);
 
     const abrirLink = (link) => {
+        //Abre o link no aplicativo padrão de navegação web
         Linking.openURL(link);
         // console.log('implementar, mandar o usuário para o link da notícia (item.link)');
     }
@@ -37,10 +41,13 @@ const ShowFeedScreen = ({ navigation }) => {
                     return (
                         
                         <View style={styles.row}>
-                            <TouchableOpacity onPress={() => abrirLink(item.link)}>
+                            <TouchableOpacity style={styles.texto} onPress={() => abrirLink(item.link)}>
                                 <Text style={styles.dataPublicacao}>{new Date(item.dataPublicacao).toLocaleString('pt-BR')}</Text>
                                 <Text style={styles.titulo}>{item.titulo}</Text>
                                 <Text style={styles.descricao} >{item.descricao.slice(0,200)}...(LER MAIS)</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                                <Feather style={styles.icon} name="trash" />
                             </TouchableOpacity>
                         </View>
                     );
@@ -58,11 +65,14 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         paddingHorizontal: 10,
         borderTopWidth: 1,
-        borderColor: 'gray'
+        borderColor: 'gray',
+    },
+    texto:{
+        width:'95%'
     },
     titulo: {
         fontSize: 14,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     image: {
         //pode alterar largura e altura como desejar
@@ -72,7 +82,7 @@ const styles = StyleSheet.create({
         margin: 5
     },
     descricao: {
-        fontSize: 9
+        fontSize: 9,
     },
     dataPublicacao: {
         fontSize: 10,

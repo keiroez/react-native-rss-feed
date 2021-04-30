@@ -1,3 +1,4 @@
+import { Alert } from 'react-native';
 import createDataContext from './createDataContext';
 
 const feedListReducer = (state, action) => {
@@ -43,17 +44,23 @@ const feedListReducer = (state, action) => {
 
 const addFeed = dispatch => {
     return (titulo, urlFeed, callback) => {
-        dispatch({
-            type: 'add_feed', 
-            payload:{  
-                titulo,
-                urlFeed
+        //Verifica se os campos estão em branco
+        if(titulo && urlFeed){
+            dispatch({
+                type: 'add_feed', 
+                payload:{  
+                    titulo,
+                    urlFeed
+                }
+            })
+            if (callback) {
+                callback();
             }
-        })
-        if (callback) {
-            callback();
+            console.log('Adicionando feed '+urlFeed);
         }
-        console.log('Adicionando feed '+urlFeed);
+        else{
+            Alert.alert('Atenção!', 'Faltam informações!')
+        }
     };
 };
 

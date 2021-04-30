@@ -16,8 +16,9 @@ const IndexScreen = ({ navigation }) => {
                     return (
                         
                             <View style={styles.row}>
-                                <TouchableOpacity onPress={() => navigation.navigate('Show', { id: item.urlFeed })}>
-                                <Text style={styles.title}>{item.titulo}</Text>
+                                <TouchableOpacity onPress={() => 
+                                    navigation.navigate('Show', { id: item.urlFeed })}>
+                                    <Text style={styles.title}>{item.titulo}</Text>
                                 </TouchableOpacity>
                                 
                                 <TouchableOpacity onPress={() => {deleteFeed(item.urlFeed)}}>
@@ -48,14 +49,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingVertical: 20,
         paddingHorizontal: 10,
-        borderTopWidth: 1,
-        borderColor: 'gray'
+        borderBottomWidth: 1,
+        borderColor: 'gray', 
     },
     title: {
-        fontSize: 18
+        fontSize: 15,
+        fontWeight: 'bold'
     },
     icon: {
-        fontSize: 24
+        fontSize: 24,
     }
 });
 
