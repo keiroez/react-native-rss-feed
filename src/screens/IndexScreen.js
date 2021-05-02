@@ -14,7 +14,6 @@ const IndexScreen = ({ navigation }) => {
                 keyExtractor={(rssfeed) => rssfeed.urlFeed}
                 renderItem={({ item }) => {
                     return (
-                        
                             <View style={styles.row}>
                                 <TouchableOpacity onPress={() => 
                                     navigation.navigate('Show', { id: item.urlFeed })}>
@@ -25,7 +24,6 @@ const IndexScreen = ({ navigation }) => {
                                     <Feather style={styles.icon} name="trash" />
                                 </TouchableOpacity>
                             </View>
-                        
                     );
                 }}
             />

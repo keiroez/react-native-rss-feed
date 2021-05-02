@@ -1,6 +1,13 @@
 import createDataContext from './createDataContext';
 import { parse } from 'fast-xml-parser';
 
+const getUrlImg = (string) => {
+    url = string.match(
+            /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi
+        );
+    return url ? "https://"+url[0]: null;
+}
+
 const feedReducer = (state, action) => {
     let newState = [];
     let item;
@@ -11,9 +18,10 @@ const feedReducer = (state, action) => {
                     titulo: element.title,
                     link: element.link,
                     descricao: element.description,
-                    imagem: '',
+                    imagem: getUrlImg(element.description),
                     dataPublicacao: element.pubDate
                 }
+//
                 //adiciona item ao state
                 newState.push(item);
                 //adiciona item ao array
@@ -25,8 +33,18 @@ const feedReducer = (state, action) => {
             console.log('implementar');
             return state
         case 'delete_item':
-            console.log('implementar');
-            return state;
+            //Removendo do array 
+            rssItems.forEach(element => {
+                if(element.link==action.payload){
+                    var index = rssItems.indexOf(element);
+                    rssItems.splice(index, 1); 
+                }
+            });
+            //Criando novo state
+            newState = state.filter(
+                (item) => item.link !== action.payload);
+            console.log('deletou feed '+action.payload);
+            return newState
         case 'restore_state':
             console.log('implementar');
             return state;
@@ -47,7 +65,7 @@ const addItem = dispatch => {
 
 const deleteItem = dispatch => {
     return (id) => {
-        console.log('implementar');
+        dispatch({ type: 'delete_item', payload: id  });
     };
 };
 
