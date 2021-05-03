@@ -7,15 +7,6 @@ import { useContext } from 'react';
 import rssfeed from '../api/rssfeed';
 import { useEffect } from 'react';
 import { Feather } from '@expo/vector-icons';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-
-// const Tab = createBottomTabNavigator(
-//     {
-//         home: ShowFeedScreen
-//     }
-// );
-
-
 
 const ShowFeedScreen = ({ navigation }) => {
     const feedListContext = useContext(FeedListContext);
@@ -46,12 +37,14 @@ const ShowFeedScreen = ({ navigation }) => {
                 renderItem={({ item }) => {
                     //atualmente só exibe o título, faça com que apareça data de publicação, descrição (pode cortar em 100 ou 200 caracteres para não ficar muito grande), e imagem (caso tenha)
                     //ao clicar em uma notícia, devemos chamar a função abrirLink que direciona o usuário para o link da notícia
+                    
+                    //Verifica se há imagem, caso não, usa padrão
                     return (
                         <View style={styles.row}>
                             <TouchableOpacity style={styles.texto} onPress={() => abrirLink(item.link)}>
                             <Image style={styles.image} source={{ uri:
                                 item.imagem ? item.imagem : 
-                                'https://www.emailmanager.com/files/upload/blog/imagenes_es/feed_rss2.jpg'
+                                'https://www.inoreader.com/images/knowledge_base/what-is-rss.png'
                             }} />
                                 <Text style={styles.dataPublicacao}>{new Date(item.dataPublicacao).toLocaleString('pt-BR')}</Text>
                                 <Text style={styles.titulo}>{item.titulo}</Text>
@@ -87,10 +80,10 @@ const styles = StyleSheet.create({
     },
     image: {
         //pode alterar largura e altura como desejar
-        width: 300,
-        height: 100,
+        width: 350,
+        height: 120,
         borderRadius: 4,
-        margin: 5
+        margin: 4
     },
     descricao: {
         fontSize: 9,

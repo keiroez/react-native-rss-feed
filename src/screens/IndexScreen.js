@@ -4,9 +4,16 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import { useContext } from 'react';
 import { Context } from '../context/FeedListContext'
+import { useEffect } from 'react';
 
 const IndexScreen = ({ navigation }) => {
-    const { state, deleteFeed} = useContext(Context);
+    const { state, deleteFeed, restoreState} = useContext(Context);
+
+    //Restaura os feeds persistidos na inicialização da tela
+    useEffect(() => {
+        restoreState();
+    }, []);
+
     return (
         <>
             <FlatList
@@ -31,6 +38,7 @@ const IndexScreen = ({ navigation }) => {
     );
 };
 
+//Botão para abrir a tela de adição de feed
 IndexScreen.navigationOptions = ({ navigation }) => {
     return {
         headerRight: () => (

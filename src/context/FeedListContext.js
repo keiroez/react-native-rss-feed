@@ -1,5 +1,42 @@
 import { Alert } from 'react-native';
 import createDataContext from './createDataContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const KEY = 'saved_feeds';
+
+//Persistir array de feed 
+const saveFeeds = async (value) => {
+    try {
+        const jsonValue = JSON.stringify(value);
+        await AsyncStorage.setItem(KEY, jsonValue);
+        console.log('feed persistido no AsyncStorage');
+    } catch (e) {
+        console.log('erro: ' + e);
+    }
+}
+
+//Remover item
+const deleteItem = async () => {
+    try {
+        await AsyncStorage.removeItem(KEY)
+        console.log('Feed removido do AS')
+      } catch(e) {
+        alert('Falha ao apagar o feed');
+        console.log('Erro: ' + e);
+      }
+  }
+
+//get feeds persistidos 
+const getMyFeed = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(KEY).then(console.log);
+      return jsonValue != null ? JSON.parse(jsonValue) : null
+      
+    } catch(e) {
+      alert("Falha ao buscar um feed");
+    }
+  }
+
 
 const feedListReducer = (state, action) => {
     let newState = [];
@@ -15,6 +52,10 @@ const feedListReducer = (state, action) => {
                 ...state,
                 feed
             ];
+
+            //Persiste o feed
+            saveFeeds(newState);
+
             //adiciona feed ao array
             rssFeeds.push(feed) 
             return newState
@@ -29,14 +70,21 @@ const feedListReducer = (state, action) => {
             //Criando novo state
             newState = state.filter(
                 (feed) => feed.urlFeed !== action.payload);
+
+            //Remover do AS
+            deleteItem(newState);    
             console.log('deletou feed '+action.payload);
             return newState
         case 'restore_state':
-            console.log('implementar');
-            return state;
+            newState = action.payload;
+            return newState;
         case 'delete_all':
             console.log('implementar');
             return state;
+        case 'get_all':
+            //get lista de feeds
+            newState = state.getMyFeed;
+            return newState;
         default:
             return state;
     }
@@ -53,6 +101,8 @@ const addFeed = dispatch => {
                     urlFeed
                 }
             })
+            
+            //Função de retorno para tela inicial
             if (callback) {
                 callback();
             }
@@ -70,9 +120,18 @@ const deleteFeed = dispatch => {
     };
 };
 
+//Restaura feeds persistidos no AS
 const restoreState = dispatch => async () => {
-    return () => {
-        console.log('implementar');
+    try {
+        const savedState = await AsyncStorage.getItem(KEY);
+        if (!savedState) {
+            console.log('Nenhum registro encontrado.');
+        }
+        else {
+            dispatch({ type: 'restore_state', payload: JSON.parse(savedState) })
+        }
+    } catch (e) {
+        console.log('erro: ' + e);
     }
 }
 
@@ -90,23 +149,30 @@ const rssFeeds = [
         urlSite: '',
         urlImagem: ''
     },
+    // {
+    //     titulo: 'G1 - Brasil',
+    //     urlFeed: 'http://g1.globo.com/dynamo/brasil/rss2.xml',
+    //     descricao: '',
+    //     urlSite: '',
+    //     urlImagem: ''
+    // },
+    // {
+    //     titulo: 'G1 - Tecnologia e Games',
+    //     urlFeed: 'http://g1.globo.com/dynamo/tecnologia/rss2.xml',
+    //     descricao: '',
+    //     urlSite: '',
+    //     urlImagem: ''
+    // },
     {
-        titulo: 'G1 - Brasil',
-        urlFeed: 'http://g1.globo.com/dynamo/brasil/rss2.xml',
+        titulo: 'Uol Notícias',
+        urlFeed: 'http://rss.home.uol.com.br/index.xml',
         descricao: '',
         urlSite: '',
         urlImagem: ''
     },
     {
-        titulo: 'G1 - Tecnologia e Games',
-        urlFeed: 'http://g1.globo.com/dynamo/tecnologia/rss2.xml',
-        descricao: '',
-        urlSite: '',
-        urlImagem: ''
-    },
-    {
-        titulo: 'Jovem Nerd - Site Completo',
-        urlFeed: 'http://jovemnerd.com.br/rss',
+        titulo: 'Uol Tecnologia',
+        urlFeed: 'http://rss.uol.com.br/feed/tecnologia.xml',
         descricao: '',
         urlSite: '',
         urlImagem: ''
